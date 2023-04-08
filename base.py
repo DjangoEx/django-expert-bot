@@ -88,6 +88,7 @@ async def replied_text_command(_, message: pyrogram.types.Message):
         )
     else:
         logging.info(f"Recieved a message in chat_id={chat_id}")
+    await message.delete()
 
 logging.getLogger().setLevel(logging.INFO)
 app.run()
