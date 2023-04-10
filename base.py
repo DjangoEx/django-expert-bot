@@ -77,9 +77,13 @@ async def start_command(_, message: pyrogram.types.Message):
     """)
 
 
-@app.on_message(pyrogram.filters.chat(ALLOWED_CHAT_ID) & pyrogram.filters.command("A") & pyrogram.filters.reply & group_access.is_administrator)
+@app.on_message(
+        pyrogram.filters.chat(ALLOWED_CHAT_ID) &
+        pyrogram.filters.command("A") & pyrogram.filters.reply &
+        group_access.is_administrator
+)
 async def replied_text_command(
-    client: pyrogram.Client, message: pyrogram.types.Message
+    _: pyrogram.Client, message: pyrogram.types.Message
 ):
     chat_id = message.chat.id
     await app.send_chat_action(
