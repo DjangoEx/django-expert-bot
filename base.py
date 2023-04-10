@@ -73,10 +73,28 @@ async def start_command(_, message: pyrogram.types.Message):
     """)
 
 
+async def is_user_admin(client: pyrogram.Client, chat_id, user_id):
+    try:
+        member = await client.get_chat_member(chat_id, user_id)
+        return member.status in ["administrator", "creator"]
+    except Exception as e:
+        logging.error(f"Error while checking admin status: {e}")
+        return False
+
+
+
 @app.on_message(pyrogram.filters.command("A") & pyrogram.filters.reply)
-async def replied_text_command(_, message: pyrogram.types.Message):
+async def replied_text_command(
+    client: pyrogram.Client, message: pyrogram.types.Message
+):
     chat_id = message.chat.id
-    if chat_id in [-1486376730, -927332799, -1001486376730, 348457974]:
+    if chat_id in [
+        -1486376730, -927332799, -1001486376730, 348457974
+    ]:
+        if not await is_user_admin(client, chat_id, message.from_user.id):
+            logging.info(f"User {message.from_user.id} is not an administrator")
+            return
+
         await app.send_chat_action(
             chat_id=chat_id, action=pyrogram.enums.ChatAction.TYPING,
         )
