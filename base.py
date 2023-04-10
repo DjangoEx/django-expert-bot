@@ -76,11 +76,13 @@ async def start_command(_, message: pyrogram.types.Message):
 async def is_user_admin(client: pyrogram.Client, chat_id, user_id):
     try:
         member = await client.get_chat_member(chat_id, user_id)
-        return member.status in ["administrator", "creator"]
+        return member.status.__str__() in [
+            "ChatMemberStatus.ADMINISTRATOR",
+            "ChatMemberStatus.OWNER"
+        ]
     except Exception as e:
         logging.error(f"Error while checking admin status: {e}")
         return False
-
 
 
 @app.on_message(pyrogram.filters.command("A") & pyrogram.filters.reply)
