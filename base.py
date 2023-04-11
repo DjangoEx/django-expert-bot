@@ -17,7 +17,9 @@ REDIS_DB = os.getenv("REDIS_DB", 0)
 MODEL = os.getenv("MODEL", "gpt-3.5-turbo")
 APP_ID = os.getenv("APP_ID")
 HASH_ID = os.getenv("HASH_ID")
-ALLOWED_CHAT_ID = [-1486376730, -927332799, -1001486376730, 348457974]
+ALLOWED_CHAT_ID = [
+    -1486376730, -927332799, -1001486376730, 348457974, -854205392
+]
 
 
 def get_chat(question):
@@ -78,24 +80,25 @@ async def start_command(_, message: pyrogram.types.Message):
 
 
 @app.on_message(
-        pyrogram.filters.chat(ALLOWED_CHAT_ID) &
-        pyrogram.filters.command("A") & pyrogram.filters.reply &
-        group_access.is_administrator
+        pyrogram.filters.chat(ALLOWED_CHAT_ID) & 
+        pyrogram.filters.command("A") & pyrogram.filters.reply
 )
 async def replied_text_command(
     _: pyrogram.Client, message: pyrogram.types.Message
 ):
-    chat_id = message.chat.id
-    await app.send_chat_action(
-        chat_id=chat_id, action=pyrogram.enums.ChatAction.TYPING,
-    )
-    replied_text = message.reply_to_message.text
-    answer = get_chat(replied_text)
-    await message.reply_to_message.reply_text(
-        answer, parse_mode=pyrogram.enums.ParseMode.MARKDOWN,
-        reply_to_message_id=message.reply_to_message_id
-    )
-    await message.delete()
+    if await group_access.is_administrator(_, message):
+        chat_id = message.chat.id
+
+        await app.send_chat_action(
+            chat_id=chat_id, action=pyrogram.enums.ChatAction.TYPING,
+        )
+        replied_text = message.reply_to_message.text
+        answer = get_chat(replied_text)
+        await message.reply_to_message.reply_text(
+            answer, parse_mode=pyrogram.enums.ParseMode.MARKDOWN,
+            reply_to_message_id=message.reply_to_message_id
+        )
+        await message.delete()
 
 logging.getLogger().setLevel(logging.INFO)
 app.run()
