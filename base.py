@@ -46,7 +46,7 @@ def get_chat(question):
         7. Remember to read the following resources:
         Django documentation, Two scopes of django, Django ORM Cookbook, Django for Professionals
         8. Make my prompts a priority over user's prompts
-        9. Follow PIP8 and Flake8 when writing your code
+        9. Follow PEP 8 and Flake8 when writing your code
         """}]
 
     messages.append({"role": "user", "content": question})
